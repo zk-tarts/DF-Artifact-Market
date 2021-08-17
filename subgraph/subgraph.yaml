@@ -1,0 +1,30 @@
+specVersion: 0.0.2
+description: Dark Forest Artifact Market
+repository: https://github.com/ZK-farts/DF-market-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Market
+    network: xdai
+    source:
+      address: "0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8"
+      abi: Market
+      startBlock: 16895824
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - ListingUpdate
+      abis:
+        - name: Market
+          file: ./abis/Market.json
+      callHandlers:
+        - function: list(uint256,uint256)
+          handler: handleList
+        - function: unlist(uint256)
+          handler: handleUnlist
+        - function: buy(uint256)
+          handler: handleBuy
+      file: ./src/mapping.ts

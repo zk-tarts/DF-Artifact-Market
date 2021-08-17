@@ -10,7 +10,6 @@ const SALES = await df.loadContract(SALES_CONTRACT_ADDRESS,SALES_CONTRACT_ABI);
 const TOKENS_CONTRACT_ADDRESS = "0xafb1A0C81c848Ad530766aD4BE2fdddC833e1e96"; // when a new round starts someone has to change this
 const TOKENS_APPROVAL_ABI = await fetch('https://gist.githubusercontent.com/zk-FARTs/d5d9f3fc450476b40fd12832298bb54c/raw/1cac7c4638ee5d766615afe4362e6ce80ed68067/APPROVAL_ABI.json').then(res=>res.json());
 const TOKENS = await df.loadContract(TOKENS_CONTRACT_ADDRESS,TOKENS_APPROVAL_ABI);  
-const FEE = await SALES.fee() 
 /*
   createElement function: this lets me make elements more easily
     @params params: Object containing at most 5 entries
@@ -203,7 +202,7 @@ function myRow(artifact){
 function saleRow(artifact){ 
     
     const onClick = (event)=>{  
-      SALES.buy(BigNumber.from(artifact.idDec),{value: BigNumber.from(artifact.price).add(FEE)}).then(()=>{ // buys the artifact
+      SALES.buy(BigNumber.from(artifact.idDec),{value: BigNumber.from(artifact.price)}).then(()=>{ // buys the artifact
         event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode) // delete the row
         alert("bought!")
       }).catch(e=>console.log(e)) // catch error (in case of tx failure or something else)
@@ -216,7 +215,7 @@ function saleRow(artifact){
     row.appendChild(createElement({type:"td", text:formatMultiplier(artifact.speedMultiplier)}))
     row.appendChild(createElement({type:"td", text:formatMultiplier(artifact.defenseMultiplier)}))
     row.appendChild(createElement({type:"td"})).appendChild(
-      createElement({type:"div", text:`price: ${utils.formatEther(artifact.price)} XDAI + ${utils.formatEther(FEE)} fee`, css:[["fontSize","70%"]]})
+      createElement({type:"div", text:`price: ${utils.formatEther(artifact.price)} XDAI`, css:[["fontSize","70%"]]})
     ).parentNode.appendChild(
       createElement({type:"button",text:"Buy", eventListeners:[["click",onClick]] })
     )

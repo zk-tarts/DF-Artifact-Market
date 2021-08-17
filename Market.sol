@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-interface DarkForestTokens{
+interface IERC721{
     function transferFrom(address from, address to, uint256 tokenID) external;
 }
 
@@ -11,21 +11,19 @@ contract Market{
   
     struct Listing{
         address owner;       // who owns the listed artifact
-        uint256 buyoutPrice; // buy out price, any bid greater will buy the artifact instantly
+        uint256 buyoutPrice; // price of the artifact in xdai
     }
 
-    address public admin;  // The admin can change the fee and also reset the token contract after each new round
+    address public admin;  // The admin can reset the token contract after each new round
     uint256 public endDate;
-    uint256 public fee;
     mapping(uint256 => Listing) public listings; // all listings 
     
     DarkForestTokens private DFTokens; 
         
-    constructor(address tokensAddress, uint256 date, uint256 _fee){
-        admin = msg.sender; // fee reciever
-        DFTokens = DarkForestTokens(tokensAddress);  
+    constructor(address tokensAddress, uint256 date){
+        admin = msg.sender; // admin can upgrade to new rounds
+        DFTokens = IERC721(tokensAddress);  
         endDate = date;
-        fee = _fee; // flat fee on each listing: probably set this to a couple cents?
     }
 
 
@@ -46,7 +44,7 @@ contract Market{
         DFTokens.transferFrom(msg.sender, address(this), tokenID);        
     }
 
-    // buying function. User input is the price they pay AFTER fee
+    // buying function. User input is the price they pay
     function buy(uint256 tokenID) external payable  {
         Listing memory oldListing = listings[tokenID];
         
@@ -54,7 +52,7 @@ contract Market{
             owner: address(0),
             buyoutPrice: 0
         });
-        require (msg.value == oldListing.buyoutPrice+fee, "wrong value");
+        require (msg.value == oldListing.buyoutPrice, "wrong value");
         DFTokens.transferFrom(address(this), msg.sender, tokenID);
         sendValue(payable(oldListing.owner), oldListing.buyoutPrice);
     }
@@ -75,29 +73,13 @@ contract Market{
     }
 
 
-    
-    // ADMIN FUNCTIONS
-    
+    // ADMIN 
     // Change the tokens address between rounds
     function newRound(uint256 date, address tokens) external{
         require(block.timestamp>endDate,"too early");
         require(msg.sender == admin, "admin function only");
         endDate = date;
-        DFTokens = DarkForestTokens(tokens);
-    }
-
-    // Collect fees between rounds
-    function collectFees() external{
-        require(block.timestamp>endDate,"too early");
-        require(msg.sender == admin, "admin function only");
-        sendValue(payable(admin), address(this).balance);
-    }
-    
-    // change the fee
-    function changeFee(uint256 newFee) external{
-        require (msg.sender == admin);
-        require (fee <= 0.75 ether,"don't be greedy!"); // on xdai '1 ether' = 1 XDAI
-        fee = newFee;
+        DFTokens = IERC721(tokens);
     }
 
 }
