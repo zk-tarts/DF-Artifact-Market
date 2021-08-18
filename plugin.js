@@ -1,15 +1,17 @@
 import { BigNumber, utils } from 'https://cdn.skypack.dev/ethers';
 
+/*
 const DF_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-2';
 const MARKET_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/zk-farts/dfartifactmarket';
+*/
 
 const SALES_CONTRACT_ADDRESS = "0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8"; // you can see the contract at https://blockscout.com/poa/xdai/address/0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8
 const SALES_CONTRACT_ABI = await fetch('https://gist.githubusercontent.com/zk-FARTs/5761e33760932affcbc3b13dd28f6925/raw/afd3c6d8eba7c27148afc9092bfe411d061d58a3/MARKET_ABI.json').then(res=>res.json());
-const SALES = await df.loadContract(SALES_CONTRACT_ADDRESS,SALES_CONTRACT_ABI);
+const SalesContract = await df.loadContract(SALES_CONTRACT_ADDRESS,SALES_CONTRACT_ABI);
 
 const TOKENS_CONTRACT_ADDRESS = "0xafb1A0C81c848Ad530766aD4BE2fdddC833e1e96"; // when a new round starts someone has to change this
 const TOKENS_APPROVAL_ABI = await fetch('https://gist.githubusercontent.com/zk-FARTs/d5d9f3fc450476b40fd12832298bb54c/raw/1cac7c4638ee5d766615afe4362e6ce80ed68067/APPROVAL_ABI.json').then(res=>res.json());
-const TOKENS = await df.loadContract(TOKENS_CONTRACT_ADDRESS,TOKENS_APPROVAL_ABI);  
+const TokensContract = await df.loadContract(TOKENS_CONTRACT_ADDRESS,TOKENS_APPROVAL_ABI);  
 /*
   createElement function: this lets me make elements more easily
     @params params: Object containing at most 5 entries
@@ -42,6 +44,20 @@ function createElement(params){
 
 
 
+async function fetchDate(){
+  
+  const storeArtifacts = df.entityStore.getArtifactsOwnedBy(STORE_ADDRESS)
+  const playerArtifacts  = df.entityStore.getArtifactsOwnedBy(df.account)
+  
+  for (let x of playerArtifacts){ 
+    x.price = await SalesContract.listings(x.id).price // TODO: convert id to number/make sure this actually works 
+  }
+
+  return [...playerArtifacts, ...storeArtifacts]
+}
+
+
+/*
 // fetch subgraph data for token stats and prices
 // 1 problem with this: we can only see ~100 listed tokens and 100 tokens owned by the player
 async function subgraphData(){
@@ -130,6 +146,7 @@ async function subgraphData(){
   return dfData
 }
 
+*/
 
 // function for properly formatting the artifacts stats
 function formatMultiplier(mul){
@@ -147,7 +164,7 @@ function formatMultiplier(mul){
 function myListedRow(artifact){
     
     const onClick = (event)=>{
-      SALES.unlist(BigNumber.from(artifact.idDec)).then(()=>{  // unlist the token
+      SalesContract.unlist(BigNumber.from(artifact.idDec)).then(()=>{  // unlist the token
         event.target.parentNode.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode.parentNode)  // delete the row
         alert("unlisted!")
       }).catch(e=>console.log(e)) // catch error (in case of tx failure or something else)
@@ -172,7 +189,7 @@ function myRow(artifact){
     
     let value; //  the price at which the token will be listed at 
     const onClick =(event)=>{
-      SALES.list(BigNumber.from(artifact.idDec),utils.parseEther(value.toString())).then(()=>{  // list the token for the price that was input
+      SalesContract.list(BigNumber.from(artifact.idDec),utils.parseEther(value.toString())).then(()=>{  // list the token for the price that was input
         event.target.parentNode.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode.parentNode)  // delete the row
         alert("listed!")
       }).catch(e=>console.log(e)) // catch error (in case of tx failure or something else)
@@ -202,7 +219,7 @@ function myRow(artifact){
 function saleRow(artifact){ 
     
     const onClick = (event)=>{  
-      SALES.buy(BigNumber.from(artifact.idDec),{value: BigNumber.from(artifact.price)}).then(()=>{ // buys the artifact
+      SalesContract.buy(BigNumber.from(artifact.idDec),{value: BigNumber.from(artifact.price)}).then(()=>{ // buys the artifact
         event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode) // delete the row
         alert("bought!")
       }).catch(e=>console.log(e)) // catch error (in case of tx failure or something else)
@@ -292,7 +309,7 @@ function saleTable(data){
 async function specialButtons(container, plugin){
   
   const approve = ()=> {
-    TOKENS.setApprovalForAll(SALES_CONTRACT_ADDRESS,true).catch(e=>console.log(e)) // this will approve the market for all tokens
+    TokensContract.setApprovalForAll(SALES_CONTRACT_ADDRESS,true).catch(e=>console.log(e)) // this will approve the market for all tokens
   }
   const refresh = async ()=> { // re-renders the whole container with the latest subgraph data
     plugin.destroy()

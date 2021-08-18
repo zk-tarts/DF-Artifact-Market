@@ -8,9 +8,9 @@ dataSources:
     name: Market
     network: xdai
     source:
-      address: "0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8"
+      address: {"0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
       abi: Market
-      startBlock: 16895824
+      startBlock: { 1xxxxxxx }
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

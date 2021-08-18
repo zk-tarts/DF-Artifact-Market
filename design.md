@@ -3,7 +3,7 @@
 - What does the plugin need to do? bare minimum: users can list current round artifacts and buy listed artifacts from within the game
 - What happens when the round ends? Current solution: an admin (deployer of contract) is trusted to change the contract to the new rounds token contract. Maybe there is a better solution?
 - Old artifacts that get left in after the round ends get permanently frozen after the token contract gets changed. Not sure if this is even that big of a deal
-- Is there a better way to design subgraph? The main problem limiting here is the subgraph stores only 100 artifacts and stores them as an array. If subgraph could return something like a dictionary then building a UI is way easier.
+- Is there a better way to design subgraph? The main problem limiting here is the subgraph stores only 100 artifacts and stores them in a way that feels annoying to work with
 - What artifacts are most demanded? What design changes make this overall more useful / convenient / pleasant experience?
 
 
