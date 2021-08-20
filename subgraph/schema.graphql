@@ -1,7 +1,0 @@
-
-type ListedToken @entity {
-  id: ID! 
-  tokenID: BigInt! # uint256
-  price: BigInt!   # uint256
-  owner:  String! # address
-}

@@ -5,11 +5,11 @@ const DF_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/darkforest-eth/dar
 const MARKET_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/zk-farts/dfartifactmarket';
 */
 
-const SALES_CONTRACT_ADDRESS = "0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8"; // you can see the contract at https://blockscout.com/poa/xdai/address/0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8
+const SALES_CONTRACT_ADDRESS = "0x1e7cb1dbC6DaD80c86e8918382107238fb4562a8"; // you can see the contract at https://blockscout.com/poa/xdai/address/0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8
 const SALES_CONTRACT_ABI = await fetch('https://gist.githubusercontent.com/zk-FARTs/5761e33760932affcbc3b13dd28f6925/raw/afd3c6d8eba7c27148afc9092bfe411d061d58a3/MARKET_ABI.json').then(res=>res.json());
 const SalesContract = await df.loadContract(SALES_CONTRACT_ADDRESS,SALES_CONTRACT_ABI);
 
-const TOKENS_CONTRACT_ADDRESS = "0xafb1A0C81c848Ad530766aD4BE2fdddC833e1e96"; // when a new round starts someone has to change this
+const TOKENS_CONTRACT_ADDRESS = "0x621ce133521c3b1cf11c0b9423406f01835af0ee"; // when a new round starts someone has to change this
 const TOKENS_APPROVAL_ABI = await fetch('https://gist.githubusercontent.com/zk-FARTs/d5d9f3fc450476b40fd12832298bb54c/raw/1cac7c4638ee5d766615afe4362e6ce80ed68067/APPROVAL_ABI.json').then(res=>res.json());
 const TokensContract = await df.loadContract(TOKENS_CONTRACT_ADDRESS,TOKENS_APPROVAL_ABI);  
 /*
