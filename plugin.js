@@ -1,9 +1,9 @@
 import { BigNumber, utils } from 'https://cdn.skypack.dev/ethers';
 
-/*
-const DF_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-2';
+
+const DF_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-3';
 const MARKET_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/zk-farts/dfartifactmarket';
-*/
+
 
 const SALES_CONTRACT_ADDRESS = "0x1e7cb1dbC6DaD80c86e8918382107238fb4562a8"; // you can see the contract at https://blockscout.com/poa/xdai/address/0x3Fb840EbD1fFdD592228f7d23e9CA8D55F72F2F8
 const SALES_CONTRACT_ABI = await fetch('https://gist.githubusercontent.com/zk-FARTs/5761e33760932affcbc3b13dd28f6925/raw/afd3c6d8eba7c27148afc9092bfe411d061d58a3/MARKET_ABI.json').then(res=>res.json());
@@ -57,7 +57,7 @@ async function fetchDate(){
 }
 
 
-/*
+
 // fetch subgraph data for token stats and prices
 // 1 problem with this: we can only see ~100 listed tokens and 100 tokens owned by the player
 async function subgraphData(){
@@ -146,7 +146,7 @@ async function subgraphData(){
   return dfData
 }
 
-*/
+
 
 // function for properly formatting the artifacts stats
 function formatMultiplier(mul){
